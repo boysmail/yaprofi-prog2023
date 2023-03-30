@@ -1,20 +1,10 @@
 from flask import Flask
 from flask import request
-
-import random
 import copy
 
 app = Flask(__name__)
 
-# class Group():
-#     def __init__(self, id, name, desc, participants):
-#         self._id = id
-#         self._name = name
-#         self._desc = desc
-#         self._participants = participants
-
-
-group = {
+group_example = {
     "id": 1,
     "name": "asd",
     "description": "asd",
@@ -76,6 +66,10 @@ def group_delete(id):
 @app.route('/group/<int:id>', methods=["PUT"])
 def group_edit(id):
     params = request.get_json()
+    if "name" not in params.keys():
+        return "Name required", 400
+    if "description" not in params.keys():
+        params["description"] = ""
     for group in group_list:
         if group["id"] == id:
             group["name"] = params["name"]
@@ -86,6 +80,10 @@ def group_edit(id):
 @app.route('/group/<int:id>/participant', methods=["POST"])
 def add_participant(id):
     param = request.get_json()
+    if "name" not in param.keys():
+        return "Name required", 400
+    if "wish" not in param.keys():
+        param["wish"] = ""
     for group in group_list:
         if group["id"] == id:
             participant_list = group["participants"]
@@ -141,7 +139,7 @@ def get_recipient(id, id_part):
 
 
 @app.route('/')
-def hello_world():  # put application's code here
+def hello_world():
     return 'Hello World!'
 
 
